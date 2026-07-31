@@ -370,7 +370,7 @@ void drawWeatherIcon(int16_t x, int16_t y, String code, uint16_t color) {
 
 	// Centering math inside P1 Panel (P1_W = 84, P1_H = 59, Icon = 48x48)
 	int16_t iconX = P1_X + ((P1_W - 48) / 2);  // Center horizontally
-	int16_t iconY = P1_Y + ((P1_H - 48) / 2);  // Center vertically
+	int16_t iconY = P1_Y + ((P1_H - 36) / 2);  // Center vertically
 
 	// Render on screen
 	tft.drawBitmap(iconX, iconY, bitmapToDraw, 48, 48, color);
@@ -390,13 +390,13 @@ void drawStaticUI() {
 	tft.setTextColor(LINE_DARK);
 	tft.setTextSize(1);
 
-	tft.setCursor(P1_X + 25, P1_Y + 5);
+	tft.setCursor(P1_X + 23, P1_Y + 5);
 	tft.print("TIEMPO");
-	tft.setCursor(P2_X + 21, P2_Y + 5);
-	tft.print("TEMP");
+	tft.setCursor(P2_X + 5, P2_Y + 5);
+	tft.print("TEMPERATURA");
 	tft.setCursor(P3_X + 18, P3_Y + 5);
 	tft.print("ALTITUD");
-	tft.setCursor(P4_X + 12, P4_Y + 5);
+	tft.setCursor(P4_X + 20, P4_Y + 5);
 	tft.print("HUMEDAD");
 
 	drawWeatherIcon(20, 30, currentIconCode, ST7735_YELLOW);
@@ -413,7 +413,7 @@ void fetchOutdoor() {
 		deserializeJson(d, http.getString());
 		humidity = d["main"]["humidity"].as<float>();
 		seaLevelPressure = d["main"]["sea_level"].as<float>();
-		currentIconCode = d["weather"]["icon"].as<String>();
+		currentIconCode = d["weather"][0]["icon"].as<String>();
 	}
 	http.end();
 }
@@ -465,11 +465,11 @@ void loop() {
 	drawWeatherIcon(20, 30, currentIconCode, ST7735_YELLOW);
 
 	// Print Temperature
-	tft.setCursor(P2_X + 10, P2_Y + 45);
+	tft.setCursor(P2_X + 18, P2_Y + 45);
 	tft.printf("%.1f", temp);
 	tft.setFont();                                       // Switch back to default font for units to make them smaller
-	tft.drawCircle(P2_X + 45, P2_Y + 28, 2, LINE_DARK);  // Degree symbol
-	tft.setCursor(P2_X + 52, P2_Y + 24);
+	tft.drawCircle(P2_X + 50, P2_Y + 28, 2, LINE_DARK);  // Degree symbol
+	tft.setCursor(P2_X + 56, P2_Y + 24);
 	tft.print("C");
 
 	// Print Altitude
@@ -482,10 +482,10 @@ void loop() {
 
 	// Print Humidity
 	tft.setFont(&FreeSans9pt7b);
-	tft.setCursor(P4_X + 20, P4_Y + 45);
+	tft.setCursor(P4_X + 22, P4_Y + 45);
 	tft.printf("%.0f", humidity);
 	tft.setFont();
-	tft.setCursor(P4_X + 42, P4_Y + 36);
+	tft.setCursor(P4_X + 46, P4_Y + 36);
 	tft.print("%");
 
 	if (WiFi.status() == WL_CONNECTED) {
